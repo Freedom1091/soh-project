@@ -33,7 +33,7 @@
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" />
+          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword" />
           <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">搜索</button>
         </form>
       </div>
@@ -44,11 +44,19 @@
 <script>
 export default {
   name: 'myHeader',
+  // 数据
+  data() {
+    return {
+      keyword: ''
+    }
+  },
   // 函数
   methods: {
     // 点击->搜索按钮
     goSearch() {
-      this.$router.push('/search')
+      // console.log(this.$route)
+      // 多次点击搜索按钮会报错->重写 push|replace 方法解决此问题（也可以在对象里写成功与失败的回调解决）
+      this.$router.push({ name: 'search', params: { keyword: this.keyword }, query: { k: this.keyword.toUpperCase() } })
     }
   }
 }

@@ -1,5 +1,8 @@
 <template>
-  <h1>Search</h1>
+  <div>
+    <h1>Search</h1>
+    <p>{{ $route.params.keyword }}</p>
+  </div>
 </template>
 
 <script>
