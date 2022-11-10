@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+// 引入小仓库
+import home from './home'
+import search from './search'
+
 Vue.use(Vuex)
 
+// 对外暴露一个 store 实例
 export default new Vuex.Store({
-  state: {
-    // 用来存储登录成功后，得到的 token
-    token: ''
-  },
-  getters: {},
-  mutations: {},
-  actions: {},
-  modules: {}
+  // 实现 Vuex 模块式开发存储数据
+  modules: {
+    home,
+    search
+  }
 })
