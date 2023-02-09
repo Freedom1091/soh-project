@@ -1,26 +1,26 @@
 import { reqCategoyrListAPI } from '@/api'
 // home 组件的小仓库
-const store = {
-  // 三级联动数据列表
+const state = {
+  // 三级联动数据列表(数据为数组形式)
   categoryList: []
 }
 const mutations = {
   CATEGORYLIST(state, categoryList) {
-    state.categoryList = categoryList
+    state.categoryList = categoryList.slice(0, 15)
   }
 }
 const actions = {
-  async categoryList(store) {
+  async categoryList({ commit }) {
     const res = await reqCategoyrListAPI()
     if (res.code === 200) {
-      store.commit('CATEGORYLIST', res.data)
+      commit('CATEGORYLIST', res.data)
     }
   }
 }
 const getters = {}
 
 export default {
-  store,
+  state,
   mutations,
   actions,
   getters
