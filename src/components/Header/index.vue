@@ -56,7 +56,12 @@ export default {
     goSearch() {
       // console.log(this.$route)
       // 多次点击搜索按钮会报错->重写 push|replace 方法解决此问题（也可以在对象里写成功与失败的回调解决）
-      this.$router.push({ name: 'search', params: { keyword: this.keyword }, query: { k: this.keyword.toUpperCase() } })
+      // 判断此时是否已有query参数，有则携带再跳转
+      if (this.$route.query) {
+        const location = { name: 'search', params: { keyword: this.keyword || undefined } }
+        location.query = this.$route.query
+        this.$router.push(location)
+      }
     }
   }
 }

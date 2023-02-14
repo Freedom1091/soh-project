@@ -16,6 +16,11 @@ export default {
   components: {
     Header,
     Footer
+  },
+  mounted() {
+    // App.Vue组件的mounted只执行一次，不会重复请求数据
+    // 通知Vuex发请求，获取三级列表的数据并存储到仓库中
+    this.$store.dispatch('getCategoryList')
   }
 }
 </script>

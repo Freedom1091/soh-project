@@ -1,10 +1,10 @@
 <template>
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="leaveIndex">
+      <div @mouseleave="leaveIndex" @mouseenter="showTypeNav">
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
-        <div class="sort">
+        <div class="sort" v-show="show">
           <!-- 一级分类 -->
           <!-- 利用事件委派+编程式路由 -->
           <div class="all-sort-list2" @click="goSearch">
@@ -56,8 +56,25 @@ export default {
   // 数据
   data() {
     return {
-      currentIndex: -1
+      currentIndex: -1,
+      show: true
     }
+  },
+  // 生命周期勾子
+  mounted() {
+    // 路由到其他页面时会触发一次生命周期钩子
+    // 若不在 home 页面，则隐藏菜单栏
+    if (this.$route.path !== '/home') {
+      this.show = false
+    }
+  },
+  // 计算属性
+  computed: {
+    ...mapState({
+      categoryList: state => {
+        return state.home.categoryList
+      }
+    })
   },
   // 事件
   methods: {
@@ -67,9 +84,12 @@ export default {
       // 利用节流来消除卡顿
       this.currentIndex = index
     }, 50),
-    // 鼠标移出：背景色消失
+    // 鼠标移出：背景色消失，除主页外菜单栏隐藏
     leaveIndex() {
       this.currentIndex = -1
+      if (this.$route.path !== '/home') {
+        this.show = false
+      }
     },
     // 鼠标点击：三级联动路由跳转
     goSearch(event) {
@@ -83,8 +103,8 @@ export default {
       // 解构出Element.dataset中的各自定义属性
       const { categoryname, category1id, category2id, category3id } = Element.dataset
       if (categoryname) {
-        // 若存在自定义属性，则证明点击的是 a 标签
-        // 整理各级 A 标签的参数
+        // 1. 若存在自定义属性，则证明点击的是 a 标签
+        // 2. 整理各级 A 标签的参数
         const location = { name: 'search' }
         const query = { categoryName: categoryname }
         // 判断是几级分类的 a 标签
@@ -99,23 +119,18 @@ export default {
         // 合并 location 与 query
         location.query = query
         // console.log(location)
-        // 路由跳转并携带参数
-        this.$router.push(location)
+        // 路由跳转
+        // 判断此时是否有 params 参数（点搜索按钮），有则携带
+        if (this.$route.params) {
+          location.params = this.$route.params
+          this.$router.push(location)
+        }
       }
+    },
+    // 鼠标进入：菜单栏显示
+    showTypeNav() {
+      this.show = true
     }
-  },
-  // 生命周期勾子
-  mounted() {
-    // 通知Vuex发请求，获取数据并存储到仓库中
-    this.$store.dispatch('categoryList')
-  },
-  // 计算属性
-  computed: {
-    ...mapState({
-      categoryList: state => {
-        return state.home.categoryList
-      }
-    })
   }
 }
 </script>
