@@ -10,3 +10,15 @@ export const reqCategoyrListAPI = () => {
     method: 'GET'
   })
 }
+
+/* 搜索数据接口
+  @param {*} param0 { }
+  @returns Promise对象
+ */
+export const reqSearchListAPI = params => {
+  return request({
+    url: '/list',
+    method: 'POST',
+    data: params
+  })
+}

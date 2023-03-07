@@ -105,26 +105,24 @@ export default {
       if (categoryname) {
         // 1. 若存在自定义属性，则证明点击的是 a 标签
         // 2. 整理各级 A 标签的参数
-        const location = { name: 'search' }
-        const query = { categoryName: categoryname }
+        const locations = { name: 'search', query: { categoryName: categoryname } }
         // 判断是几级分类的 a 标签
         if (category1id) {
           // 动态添加query
-          query.category1Id = category1id
+          locations.query.category1Id = category1id
         } else if (category2id) {
-          query.category2Id = category2id
+          locations.query.category2Id = category2id
         } else {
-          query.category3Id = category3id
+          locations.query.category3Id = category3id
         }
-        // 合并 location 与 query
-        location.query = query
-        // console.log(location)
+        // console.log(locations)
         // 路由跳转
         // 判断此时是否有 params 参数（点搜索按钮），有则携带
-        if (this.$route.params) {
-          location.params = this.$route.params
-          this.$router.push(location)
+        if (this.$route.params.keyword) {
+          locations.params = this.$route.params
         }
+        // 目前商品分类这里携带参数只有query参数
+        this.$router.push(locations)
       }
     },
     // 鼠标进入：菜单栏显示
