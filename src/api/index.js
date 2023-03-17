@@ -22,3 +22,14 @@ export const reqSearchListAPI = params => {
     data: params
   })
 }
+
+/* 商品详情接口
+  @param {*} param0 { }
+  @returns Promise对象
+ */
+export const reqGoodsInfoAPI = skuId => {
+  return request({
+    url: `/item/${skuId}`,
+    method: 'GET'
+  })
+}
