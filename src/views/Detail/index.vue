@@ -7,18 +7,18 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <span>手机</span>
-        <span>手机通讯</span>
-        <span>手机</span>
+        <span v-if="categoryView.category1Id">{{ categoryView.category1Name }}</span>
+        <span v-if="categoryView.category2Id">{{ categoryView.category2Name }}</span>
+        <span v-if="categoryView.category3Id">{{ categoryView.category3Name }}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :skuImageList="skuImageList" />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :skuImageList="skuImageList" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -59,43 +59,23 @@
               </div>
             </div>
           </div>
-
+          <!-- 售卖属性 -->
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl>
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
-              </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
+              <dl v-for="skuSaleValue in skuInfo.skuSaleAttrValueList" :key="skuSaleValue.id">
+                <dt class="title">{{ skuSaleValue.saleAttrName }}</dt>
+                <dd changepirce="0" class="active">{{ skuSaleValue.saleAttrValueName }}</dd>
               </dl>
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="count" @change="changeCount" />
+                <a href="javascript:" class="plus" @click="count++">+</a>
+                <a href="javascript:" class="mins" @click="count > 1 ? count-- : (count = 1)">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a @click="addShopCrad">加入购物车</a>
               </div>
             </div>
           </div>
@@ -103,7 +83,7 @@
       </div>
     </section>
 
-    <!-- 内容详情页 -->
+    <!-- 内容详情页(死数据) -->
     <section class="product-detail">
       <aside class="aside">
         <div class="tabWraped">
@@ -341,21 +321,54 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'DeTail',
   data() {
-    return {}
+    return {
+      // 购买数量
+      count: 1
+    }
   },
   mounted() {
     // 派发 action 获取商品详情信息
     // 从路由中获取 skuId
     this.$store.dispatch('getGoodsInfo', this.$route.params.skuId)
   },
-
+  methods: {
+    // 用户修改表单中的数量事件
+    changeCount(event) {
+      const value = event.target.value * 1
+      if (isNaN(value) || value < 1) {
+        // 输入非法（输入字母、汉字等）
+        this.count = 1
+      } else {
+        // 若输入小数,则取整
+        // console.log(value)
+        this.count = parseInt(value)
+      }
+    },
+    // 加入购物车的回调
+    addShopCrad() {
+      try {
+        // 发请求，将购买数量与商品ID携带过去
+        this.$store.dispatch('addORupdateShop', { skuId: this.$route.params.skuId, skuNum: this.count })
+        // 路由跳转
+      } catch (error) {
+        alert(error.message)
+      }
+    }
+  },
   components: {
     ImageList,
     Zoom
   },
   // 计算属性
   computed: {
-    ...mapGetters(['categoryView', 'skuInfo'])
+    ...mapGetters(['categoryView', 'skuInfo', 'skuSaleAttrValueList']),
+    // 给子组件 ZOOM 的值
+    // 数据刚加载时，this.skuInfo 可能是一个空对象
+    skuImageList() {
+      // 在子组件 Zoom 中，需要使用 skuImageList 中的值
+      // skuImageList 有可能是空数据，所以使用 || [{}] 解决
+      return this.skuInfo.skuImageList || [{}]
+    }
   }
 }
 </script>

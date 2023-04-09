@@ -1,5 +1,5 @@
 //
-import { reqGoodsInfoAPI } from '@/api'
+import { reqGoodsInfoAPI, reqAddshopCardAPI } from '@/api'
 const state = {
   goodsInfo: {}
 }
@@ -16,6 +16,15 @@ const actions = {
       // console.log(res.data)
       commit('GOODSINFO', res.data)
     }
+  },
+  async addORupdateShop({ commit }, { skuId, skuNum }) {
+    // 此请求并未返回数据，不需要将数据更新到仓库的操作
+    const res = await reqAddshopCardAPI(skuId, skuNum)
+    if (res.code === 200) {
+      return 'ok'
+    } else {
+      return Promise.reject(Error('fail'))
+    }
   }
 }
 // 计算属性
@@ -26,6 +35,9 @@ const getters = {
   },
   skuInfo(state) {
     return state.goodsInfo.skuInfo || {}
+  },
+  skuSaleAttrValueList(state) {
+    return state.goodsInfo.skuInfo.skuSaleAttrValueList || []
   }
 }
 

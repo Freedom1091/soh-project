@@ -1,8 +1,8 @@
 <template>
-  <div class="swiper-container">
+  <div class="swiper-container" ref="cur">
     <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="../images/s1.png" />
+      <div class="swiper-slide" v-for="(slide, index) in skuImageList" :key="slide.id">
+        <img :src="slide.imgUrl" :class="{ active: curIndex === index }" @click="changeCurIndex(index)" />
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -11,8 +11,50 @@
 </template>
 
 <script>
+// 引入 Swiper
+import Swiper from 'swiper'
 export default {
-  name: 'ImageList'
+  name: 'ImageList',
+  data() {
+    return {
+      curIndex: 0
+    }
+  },
+  props: ['skuImageList'],
+  methods: {
+    // 点击图片 -> 改变curIndex
+    changeCurIndex(index) {
+      this.curIndex = index
+      this.$bus.$emit('getIndex', this.curIndex)
+    }
+  },
+  // 数据监听
+  watch: {
+    // 监听放大镜下面的轮播图数据
+    skuImageList: {
+      immediate: true,
+      handler(newValue, oldValue) {
+        this.$nextTick(() => {
+          new Swiper(
+            // '.swiper-container'
+            // 使用 ref 获取元素
+            this.$refs.cur,
+            {
+              // 如果需要前进后退按钮
+              navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+              },
+              // 设置slider容器能够同时显示的slides数量
+              slidesPerView: 4,
+              // 同时滚动的slides数量
+              slidesPerGroup: 1
+            }
+          )
+        })
+      }
+    }
+  }
 }
 </script>
 
@@ -37,11 +79,6 @@ export default {
       display: block;
 
       &.active {
-        border: 2px solid #f60;
-        padding: 1px;
-      }
-
-      &:hover {
         border: 2px solid #f60;
         padding: 1px;
       }

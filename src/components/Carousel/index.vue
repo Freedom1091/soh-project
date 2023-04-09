@@ -27,7 +27,7 @@ export default {
       immediate: true,
       handler(newValue, oldValue) {
         this.$nextTick(() => {
-          const mySwiper = new Swiper(
+          new Swiper(
             // '.swiper-container'
             // 使用 ref 获取元素
             this.$refs.floor1Swiper,
@@ -51,11 +51,11 @@ export default {
                 prevEl: '.swiper-button-prev'
               }
             }
-          )
-          // 定义属性却不使用报错
+          ) /*
+          // 解决定义属性却不使用的报错
           if (mySwiper) {
             mySwiper.autoplay.running = true
-          }
+          } */
         })
       }
     }

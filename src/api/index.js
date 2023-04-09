@@ -33,3 +33,10 @@ export const reqGoodsInfoAPI = skuId => {
     method: 'GET'
   })
 }
+
+export const reqAddshopCardAPI = (skuId, skuNum) => {
+  return request({
+    url: `/cart/addToCart/${skuId}/${skuNum}`,
+    method: 'POST'
+  })
+}
