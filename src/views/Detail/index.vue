@@ -349,8 +349,14 @@ export default {
       try {
         // 发请求，将购买数量与商品ID携带过去
         this.$store.dispatch('addORupdateShop', { skuId: this.$route.params.skuId, skuNum: this.count })
-        // 路由跳转
+        // 路由跳转 - 加入购物车成功的路由
+        // 简单的数据【skuNum】，通过 query 传递给下级路由
+        // 利用浏览器会话存储，将对象 skuInfo 传递给 AddCartSuccess 路由
+        // 传递对象数据，将其转为 JSON 格式再进行存储
+        sessionStorage.setItem('SKUINFO', JSON.stringify(this.skuInfo))
+        this.$router.push({ name: 'AddCartSuccess', query: { skuNum: this.count } })
       } catch (error) {
+        // 加入购物车失败的回调
         alert(error.message)
       }
     }

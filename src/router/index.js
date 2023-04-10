@@ -40,7 +40,7 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 
 const router = new VueRouter({
   routes,
-  // 打开商品页面时，滚动到顶部
+  // 打开商品详情页面时，滚动到顶部
   scrollBehavior(to, from, savedPosition) {
     // 始终滚动到顶部
     return { y: 0 }

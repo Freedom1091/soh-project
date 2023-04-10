@@ -34,5 +34,19 @@ export default [
     path: '/detail/:skuId',
     component: () => import('@/views/Detail'),
     meta: { isShow: true }
+  },
+  // 加入购物车成功路由
+  {
+    path: '/AddCartSuccess',
+    name: 'AddCartSuccess',
+    component: () => import('@/views/AddCartSuccess'),
+    meta: { isShow: true }
+  },
+  // 购物车页面路由
+  {
+    path: '/ShopCart',
+    name: 'ShopCart',
+    component: () => import('@/views/ShopCart'),
+    meta: { isShow: true }
   }
 ]
